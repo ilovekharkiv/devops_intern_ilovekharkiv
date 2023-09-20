@@ -1,6 +1,10 @@
 # Use a base image with the necessary tools (e.g., git, jq, and any other dependencies)
 FROM ubuntu:latest
 
+# Define default env vars
+ENV MAX_BACKUPS=3
+ENV RUN_AMOUNT=3
+
 # Install required packages
 RUN apt-get update && \
     apt-get install -y git jq

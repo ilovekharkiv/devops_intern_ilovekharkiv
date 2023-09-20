@@ -13,8 +13,8 @@ You will find .env.sample inside the repo and you need ti rename it to `.env`. T
 REPO_SSH_URL="git@github.com:ilovekharkiv/devops_intern_ilovekharkiv.git"
 BACKUP_DIR=backup
 REPO_NAME="git@github.com:ilovekharkiv"
-MAX_BACKUPS=3 # You need to choose the amount of backups you would like to generate. Please keep in mind that MAX_BACKUPS has to be >0, otherwise backup won't be created
-RUN_AMOUNT=5  # This is the amount of runs, which script will do before it stops
+MAX_BACKUPS=$MAX_BACKUPS # Default value = 3. You need to choose the amount of backups you would like to generate. Please keep in mind that MAX_BACKUPS has to be >0, otherwise backup won't be created
+RUN_AMOUNT=$RUN_AMOUNT  # Default value = 3. This is the amount of runs, which script will do before it stops.
 DB_USER=
 DB_PASSWORD=
 DB_ENDPOINT=
@@ -29,11 +29,15 @@ docker build -t my_backup .
 
 ## 4. Run the container
 
+This is an example of the script with custom values for `MAX_BACKUPS` and `RUN_AMOUNT`
+
 ```
-sudo docker run -it \
+docker run -it \
 -v $(pwd)/backup:/backup \
 -v $SSH_AUTH_SOCK:/ssh-agent \
 -e SSH_AUTH_SOCK=/ssh-agent \
+-e MAX_BACKUPS=5 \
+-e RUN_AMOUNT=10 \
 my_backup
 ```
 
