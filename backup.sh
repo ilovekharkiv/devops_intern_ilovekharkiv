@@ -19,11 +19,6 @@ else
   RUN_AMOUNT=1
 fi
 
-# Define the path to your private repo, the backup directory, and the repository name
-REPO_SSH_URL="git@github.com:ilovekharkiv/devops_intern_ilovekharkiv.git"
-REPO_NAME="git@github.com:ilovekharkiv"
-BACKUP_DIR=backup
-
 # Ensure the backup directory exists
 mkdir -p "$BACKUP_DIR"
 
