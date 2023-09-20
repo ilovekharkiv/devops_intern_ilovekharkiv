@@ -76,13 +76,18 @@ for ((i=1; i<=$RUN_AMOUNT; i++)); do
     jq ". += [$BACKUP_INFO]" "$BACKUP_DIR/versions.json" > "$BACKUP_DIR/versions.json.tmp" && mv "$BACKUP_DIR/versions.json.tmp" "$BACKUP_DIR/versions.json"
   fi
 
-  # Remove old backups if the MAX_BACKUPS environment variable is set
-  if [[ $MAX_BACKUPS -gt 0 ]]; then
-    while [[ $(jq 'length' "$BACKUP_DIR/versions.json") -gt $MAX_BACKUPS ]]; do
-      OLDEST_VERSION=$(jq -r '.[0].version' "$BACKUP_DIR/versions.json")
-      jq 'del(.[0])' "$BACKUP_DIR/versions.json" > "$BACKUP_DIR/versions.json.tmp" && mv "$BACKUP_DIR/versions.json.tmp" "$BACKUP_DIR/versions.json"
-      rm "$BACKUP_DIR/devops_internship_${OLDEST_VERSION}.tar.gz"
-    done
+   # Removing old backups if MAX_BACKUPS is set
+   if [[ -n "$MAX_BACKUPS" && "$MAX_BACKUPS" =~ ^[0-9]+$ ]]; then
+    BACKUPS=$(ls -t1 "$BACKUP_DIR"/*.tar.gz 2>/dev/null)
+    NUM_BACKUPS=$(echo "$BACKUPS" | wc -l)
+    
+    if [ "$NUM_BACKUPS" -gt "$MAX_BACKUPS" ]; then
+      NUM_TO_DELETE=$((NUM_BACKUPS - MAX_BACKUPS))
+      
+      # Delete the oldest backups
+      echo "Deleting $NUM_TO_DELETE old backups..."
+      echo "$BACKUPS" | tail -n "$NUM_TO_DELETE" | xargs rm
+    fi
   fi
 
   echo "Backup completed: $ARCHIVE_FILENAME"
