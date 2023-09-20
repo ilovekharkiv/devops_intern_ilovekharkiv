@@ -7,7 +7,7 @@ ENV RUN_AMOUNT=3
 
 # Install required packages
 RUN apt-get update && \
-    apt-get install -y git jq
+    apt-get install -y git jq openssh-client
 
 # Copy your script and .env file into the container
 COPY backup.sh .
@@ -18,6 +18,12 @@ RUN chmod +x ./backup.sh
 
 # Create a directory for storing backups outside the container
 VOLUME /backup
+
+# Configure SSH for GitHub
+RUN mkdir -p /root/.ssh && \
+    chmod 700 /root/.ssh && \
+    touch /root/.ssh/known_hosts && \
+    ssh-keyscan github.com >> /root/.ssh/known_hosts
 
 # Run the script inside the container when the container starts
 CMD ["./backup.sh"]
