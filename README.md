@@ -13,7 +13,7 @@ You will find .env.sample inside the repo and you need ti rename it to `.env`. T
 REPO_SSH_URL="git@github.com:ilovekharkiv/devops_intern_ilovekharkiv.git"
 BACKUP_DIR=backup
 REPO_NAME="git@github.com:ilovekharkiv"
-MAX_BACKUPS=3 # You need to choose the amount of backups you would like to generate
+MAX_BACKUPS=3 # You need to choose the amount of backups you would like to generate. Please keep in mind that MAX_BACKUPS has to be >0, otherwise backup won't be created
 RUN_AMOUNT=5  # This is the amount of runs, which script will do before it stops
 DB_USER=
 DB_PASSWORD=
