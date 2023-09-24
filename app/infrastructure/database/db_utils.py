@@ -15,10 +15,10 @@ __all__ = (
 
 
 class DBConfig(BaseConfig):
-    user: str
-    password: str
-    endpoint: str
-    name: str
+    user: str = ""
+    password: str = ""
+    endpoint: str = ""
+    name: str = ""
 
     class Config(BaseConfig.Config):
         env_prefix = "DB_"

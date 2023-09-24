@@ -1,0 +1,56 @@
+version: '3'
+services:
+
+    frontend:
+      container_name: frontend
+      restart: always
+      build:
+        context: ./frontend
+      ports:
+        - "${PORT_FRONTEND}:${PORT_FRONTEND}"
+      env_file:
+        - .env
+
+    backend:
+      container_name: backend
+      restart: always
+      build:
+        context: ./app
+      ports:
+        - "${PORT_BACKEND}:${PORT_BACKEND}"
+      environment:
+        - POSTGRES_HOST_AUTH_METHOD=${POSTGRES_HOST_AUTH_METHOD}
+      depends_on:
+        - database
+      env_file:
+        - .env
+
+    nginx:
+        container_name: backend
+        restart: always
+        build:
+          context: ./nginx
+        ports:
+          - "${PORT_NGINX}:${PORT_NGINX}"
+        depends_on:
+          - frontend
+          - backend
+        volumes:
+          - ./nginx/configs:/etc/nginx/conf.d
+        env_file:
+        - .env
+
+    database:
+      container_name: database
+      restart: always
+      image: postgres:11
+      ports:
+        - "${PORT_DATABASE}:${PORT_DATABASE}"
+      environment:
+        - POSTGRES_USER=${DB_USER}
+        - POSTGRES_PASSWORD=${DB_PASSWORD}
+        - POSTGRES_DB=${DB_NAME}
+      volumes:
+        - ~/pg_data:/var/lib/postgresql/data
+      env_file:
+       - .env

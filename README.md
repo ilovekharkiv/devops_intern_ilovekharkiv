@@ -1,12 +1,12 @@
 # Task 1 DevOps 1.0
 
 ## Table of Contents
-#### [1. Instructions for task DO_1]()
-#### [2. Instructions for task DO_2]()
+#### [1. Instructions for task DO_1](https://github.com/ilovekharkiv/devops_intern_ilovekharkiv/tree/DO_2#instructions-for-task-do_1)
+#### [2. Instructions for task DO_2](https://github.com/ilovekharkiv/devops_intern_ilovekharkiv/tree/DO_2#instructions-for-task-do_2)
 #### [3. Instructions for task DO_3]()
 
 
-## [Instructions for task DO_1]()
+## Instructions for task DO_1
 
 ### Step 1. Download the repository with Dockerfile 
 
@@ -38,13 +38,49 @@ docker build -t my_backup .
 
 This is an example of the script with custom values for `MAX_BACKUPS` and `RUN_AMOUNT`
 
+```
 docker run -it \
 -v $(pwd)/backup:/backup \
 -v $SSH_AUTH_SOCK:/ssh-agent \
 -v /home/$USER/.ssh:/root/.ssh/known_hosts \
 -e SSH_AUTH_SOCK=/ssh-agent \
-my_backup 
+my_backup
+``` 
 
-## [Instructions for task DO_2]()
+## Instructions for task DO_2
 
-### Step 1. 
+### Step 1. Download the repository 
+
+Click this [Link](https://github.com/ilovekharkiv/devops_intern_ilovekharkiv/archive/refs/heads/DO_2.zip). Once it is downloaded, locate it on your computer and open the terminal form repo's root folder. You will find the files that you need for launching docker-compose.
+
+### Step 2. Rename .env.sample.do2 => .env
+
+You will find .env.sample inside the repo and you need ti rename it to `.env` and update the values where needed (`DB_USER,DB_PASSWORD,DP_ENDPOINT,DB_NAME`). The content of the file is the following:
+
+```bash
+DB_USER=your_dbuser
+DB_PASSWORD=your_dbpassword
+DB_ENDPOINT=your_endpoint
+DB_NAME=your_dbname
+POSTGRES_HOST_AUTH_METHOD=Trust
+PORT_BACKEND=8000
+PORT_FRONTEND=4200
+PORT_NGINX=80
+PORT_DATABASE=5432
+```
+
+### Step 3. Run docker-compose.yml from project root directory with the following command:
+
+```
+docker-compose up -d
+```
+
+### Step 4. Once it's started, you can check multiple endpoints via your browser
+
+Frontend - http://localhost/
+
+![](/screenshots/do_2/frontend.png "frontend")
+
+Backend - http://localhost/api/health
+
+![](/screenshots/do_2/backend.png "backend")
