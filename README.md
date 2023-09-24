@@ -1,11 +1,18 @@
-# Instructions for task DO_1
+# Task 1 DevOps 1.0
 
-## Step 1. Download the repository with Dockerfile 
+## Table of Contents
+#### [1. Instructions for task DO_1]()
+#### [2. Instructions for task DO_2]()
+#### [3. Instructions for task DO_3]()
+
+
+## [Instructions for task DO_1]()
+
+### Step 1. Download the repository with Dockerfile 
 
 Click this [Link](https://github.com/ilovekharkiv/devops_intern_ilovekharkiv/archive/refs/heads/DO_1.zip). Once it is downloaded, locate it on your computer and open the terminal form repo's root folder. You will find the files that you need for launching the script.
 
-
-## 2. Rename .env.sample => .env
+### Step 2. Rename .env.sample => .env
 
 You will find .env.sample inside the repo and you need ti rename it to `.env`. The content of the file is the following:
 
@@ -21,23 +28,23 @@ DB_ENDPOINT=
 DB_NAME=
 ```
 
-## 3. Build an image
+### Step 3. Build an image
 
 ```bash
 docker build -t my_backup .
 ```
 
-## 4. Run the container
+### Step 4. Run the container
 
 This is an example of the script with custom values for `MAX_BACKUPS` and `RUN_AMOUNT`
 
-```
 docker run -it \
 -v $(pwd)/backup:/backup \
 -v $SSH_AUTH_SOCK:/ssh-agent \
+-v /home/$USER/.ssh:/root/.ssh/known_hosts \
 -e SSH_AUTH_SOCK=/ssh-agent \
--e MAX_BACKUPS=5 \
--e RUN_AMOUNT=10 \
-my_backup
-```
+my_backup 
 
+## [Instructions for task DO_2]()
+
+### Step 1. 
