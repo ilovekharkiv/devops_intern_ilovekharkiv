@@ -2,7 +2,6 @@ version: '3'
 services:
 
     frontend:
-      container_name: frontend
       restart: always
       build:
         context: ./frontend
@@ -12,7 +11,6 @@ services:
         - .env
 
     backend:
-      container_name: backend
       restart: always
       build:
         context: ./app
@@ -26,7 +24,6 @@ services:
         - .env
 
     nginx:
-        container_name: backend
         restart: always
         build:
           context: ./nginx
@@ -41,7 +38,6 @@ services:
         - .env
 
     database:
-      container_name: database
       restart: always
       image: postgres:11
       ports:

@@ -55,14 +55,14 @@ Click this [Link](https://github.com/ilovekharkiv/devops_intern_ilovekharkiv/arc
 
 ### Step 2. Rename .env.sample.do2 => .env
 
-You will find .env.sample inside the repo and you need ti rename it to `.env` and update the values where needed (`DB_USER,DB_PASSWORD,DP_ENDPOINT,DB_NAME`). The content of the file is the following:
+You will find .env.sample inside the repo and you need ti rename it to `.env` and update the values where needed (`db_user,db_password,db_endpoint,db_name`). The content of the file is the following:
 
 ```bash
-DB_USER=your_dbuser
-DB_PASSWORD=your_dbpassword
-DB_ENDPOINT=your_endpoint
-DB_NAME=your_dbname
-POSTGRES_HOST_AUTH_METHOD=Trust
+DB_USER=dbuser
+DB_PASSWORD=dbpassword
+DB_ENDPOINT=dbpostgres
+DB_NAME=postgres
+POSTGRES_HOST_AUTH_METHOD=trust 
 PORT_BACKEND=8000
 PORT_FRONTEND=4200
 PORT_NGINX=80
