@@ -1,0 +1,26 @@
+name: DO_3_Nginx. Build & Upload.
+
+on:
+  push:
+    paths:
+      - 'nginx/**'
+  pull_request:
+    paths:
+      - 'nginx/**'
+
+jobs:
+  nginx-build:
+    runs-on: ubuntu-latest  # self-hosted
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Build Docker Image
+        run: cd nginx/ && docker build -t nginx_devops:latest .
+
+      - name: Upload Docker image
+        uses: ishworkh/container-image-artifact-upload@v1.0.0
+        with:
+          image: "nginx_devops:latest"
+          retention_days: 1

@@ -1,0 +1,50 @@
+name: DO_3_Frontend. Checkout,Test,Build & Upload..
+on:
+  push:
+    paths:
+      - 'frontend/**'
+  pull_request:
+    paths:
+      - 'frontend/**'
+
+jobs:
+  setup-and-test:
+    runs-on: ubuntu-latest  # self-hosted
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install Chromium
+        run: |
+          sudo apt-get update
+          sudo apt-get install chromium-browser
+        shell: bash
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Install Dependencies
+        run: npm install
+        working-directory: frontend/
+
+      - name: Lint with npm
+        run: npm run lint
+        working-directory: frontend/
+
+      - name: Run Tests
+        run: |
+          npm ci
+          npm run test:ci
+        working-directory: frontend/
+
+      - name: Build Docker Image
+        run: cd frontend/ && docker build -t fe_devops:latest .
+
+      - name: Upload Docker image
+        uses: ishworkh/container-image-artifact-upload@v1.0.0
+        with:
+          image: "fe_devops:latest"
+          retention_days: 1
