@@ -1,4 +1,4 @@
-name: Test run v1
+name: Main_branch_workflow
 
 on: workflow_dispatch
 
