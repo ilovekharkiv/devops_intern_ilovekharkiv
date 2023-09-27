@@ -14,7 +14,7 @@ RUN npm run build
 # ----------------------------
 # run with nginx
 # ----------------------------
-FROM nginx
+FROM nginx:stable
 
 RUN rm /etc/nginx/conf.d/default.conf
 COPY /nginx/frontend.conf /etc/nginx/conf.d
@@ -22,4 +22,4 @@ COPY --from=build /app/dist/frontend /usr/share/nginx/html
 
 EXPOSE 4200
 
-# 2
+# 4
