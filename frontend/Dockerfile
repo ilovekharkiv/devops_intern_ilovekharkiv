@@ -14,7 +14,7 @@ RUN npm run build
 # ----------------------------
 # run with nginx
 # ----------------------------
-FROM nginx
+FROM nginx:stable
 
 RUN rm /etc/nginx/conf.d/default.conf
 COPY /nginx/frontend.conf /etc/nginx/conf.d
