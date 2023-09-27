@@ -1,16 +1,26 @@
 name: DO_3_Nginx. Build & Upload.
 
 on:
+  workflow_dispatch:
+    inputs:
+      runner:
+        description: 'Runs-on'
+        required: true
+        default: 'warning'
+        type: choice
+        options:
+        - ubuntu-latest
+        - self-hosted
   push:
     paths:
       - 'nginx/**'
   pull_request:
     paths:
       - 'nginx/**'
-
+  
 jobs:
   nginx-build:
-    runs-on: ubuntu-latest  # self-hosted
+    runs-on: ${{inputs.runner}} # self-hosted
 
     steps:
       - name: Checkout Code
