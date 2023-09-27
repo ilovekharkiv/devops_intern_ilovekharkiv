@@ -1,12 +1,4 @@
-name: Main_branch_workflow
+name: Nginx
 
-on: workflow_dispatch
-
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Show environment v1
-        run: env | grep ^GITHUB
-      - name: Show ref v1
-        run: echo "===============> Version from $GITHUB_REF"
+on: 
+  workflow_dispatch
