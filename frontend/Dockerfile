@@ -20,4 +20,4 @@ RUN rm /etc/nginx/conf.d/default.conf
 COPY /nginx/frontend.conf /etc/nginx/conf.d
 COPY --from=build /app/dist/frontend /usr/share/nginx/html
 
-EXPOSE 4200
+EXPOSE $PORT_FRONTEND
