@@ -22,4 +22,4 @@ COPY --from=build /app/dist/frontend /usr/share/nginx/html
 
 EXPOSE 4200
 
-# 1
+# 2

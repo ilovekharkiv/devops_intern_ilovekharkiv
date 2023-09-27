@@ -20,7 +20,7 @@ on:
   
 jobs:
   nginx-build:
-    runs-on: ${{inputs.runner}} # self-hosted
+    runs-on: ${{inputs.runner}} # either self-hosted or github runner
 
     steps:
       - name: Checkout Code

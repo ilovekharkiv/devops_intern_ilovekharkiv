@@ -1,6 +1,16 @@
 name: DO_3_Backend. Lint,Test,Build & Upload.
 
 on:
+  workflow_dispatch:
+    inputs:
+      runner:
+        description: 'Runs-on'
+        required: true
+        default: 'warning'
+        type: choice
+        options:
+        - ubuntu-latest
+        - self-hosted
   push:
     paths:
       - 'app/**'
@@ -10,7 +20,7 @@ on:
 
 jobs:
   backend_build_for_DO3:
-    runs-on: ubuntu-latest  # self-hosted
+    runs-on: ${{inputs.runner}} # either self-hosted or github runner
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4

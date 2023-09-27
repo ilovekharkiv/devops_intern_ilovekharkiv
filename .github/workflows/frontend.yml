@@ -1,5 +1,15 @@
 name: DO_3_Frontend. Checkout,Test,Build & Upload..
 on:
+  workflow_dispatch:
+    inputs:
+      runner:
+        description: 'Runs-on'
+        required: true
+        default: 'warning'
+        type: choice
+        options:
+        - ubuntu-latest
+        - self-hosted
   push:
     paths:
       - 'frontend/**'
@@ -9,7 +19,7 @@ on:
 
 jobs:
   setup-and-test:
-    runs-on: ubuntu-latest  # self-hosted
+    runs-on: ${{inputs.runner}} # either self-hosted or github runner
 
     steps:
       - name: Checkout Code
