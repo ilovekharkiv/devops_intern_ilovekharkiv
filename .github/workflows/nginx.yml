@@ -1,5 +1,5 @@
 name: DO_3_Nginx. Build & Upload.
-
+run-name: ${{ github.sha }} Nginx for DO_3 
 on:
   workflow_dispatch:
     inputs:
