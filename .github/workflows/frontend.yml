@@ -1,4 +1,5 @@
-name: DO_3_Frontend. Checkout,Test,Build & Upload..
+name: DO_3_Frontend. Checkout,Test,Build & Upload.
+run-name: ${{ github.sha }} FE for DO_3 
 on:
   workflow_dispatch:
     inputs:
