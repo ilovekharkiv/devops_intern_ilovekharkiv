@@ -8,8 +8,6 @@ RUN pip3 install -r requirements.txt
 
 RUN chmod +x ./start.sh
 
-EXPOSE 8000
+EXPOSE $PORT_BACKEND
 
 CMD ["./start.sh"]
-
-# 3

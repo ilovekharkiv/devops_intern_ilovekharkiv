@@ -52,5 +52,5 @@ jobs:
         uses: ishworkh/container-image-artifact-upload@v1.0.0
         with:
           image: "be_devops:latest"
-          retention-days: 1
+          retention_days: 1
 

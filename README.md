@@ -53,7 +53,7 @@ my_backup
 
 Click this [Link](https://github.com/ilovekharkiv/devops_intern_ilovekharkiv/archive/refs/heads/DO_2.zip). Once it is downloaded, locate it on your computer and open the terminal form repo's root folder. You will find the files that you need for launching docker-compose.
 
-### Step 2. Rename .env.sample.do2 => .env
+### Step 2. Rename .env.sample => .env
 
 You will find .env.sample inside the repo and you need ti rename it to `.env` and update the values where needed (`db_user,db_password,db_endpoint,db_name`). The content of the file is the following:
 
@@ -72,7 +72,11 @@ PORT_DATABASE=5432
 ### Step 3. Run docker-compose.yml from project root directory with the following command:
 
 ```
+<<<<<<< HEAD
 docker-compose up -d
+=======
+docker-compose up --build -d
+>>>>>>> main
 ```
 
 ### Step 4. Once it's started, you can check multiple endpoints via your browser
