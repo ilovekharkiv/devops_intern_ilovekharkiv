@@ -72,11 +72,7 @@ PORT_DATABASE=5432
 ### Step 3. Run docker-compose.yml from project root directory with the following command:
 
 ```
-<<<<<<< HEAD
-docker-compose up -d
-=======
 docker-compose up --build -d
->>>>>>> main
 ```
 
 ### Step 4. Once it's started, you can check multiple endpoints via your browser
