@@ -34,9 +34,9 @@ jobs:
         shell: bash
 
       - name: Install Dependencies
-        run: |
-          python3 -m pip install flake8 pytest fastapi httpx pytest_mock
+        run: | 
           python3 -m pip install -r app/requirements.txt
+          python3 -m pip install -r app/requirements_dev.txt
         shell: bash
 
       - name: Lint with flake8
