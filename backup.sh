@@ -1,95 +1,52 @@
-#!/bin/bash
+#!/bin/sh
 
-# Source variables from .env file
-if [ -f .env ]; then
-  source .env
-fi
+# Specify the name of the directory for backup
+BACKUP_DIR="./backup"
 
-# Check if the MAX_BACKUPS environment variable is set and is a valid number
-if [[ -n "$MAX_BACKUPS" && "$MAX_BACKUPS" =~ ^[0-9]+$ ]]; then
-  MAX_BACKUPS=$MAX_BACKUPS
+# Check whether the directory exists
+if [ ! -d "$BACKUP_DIR" ]; then
+  # If the directory does not exist, create it
+  mkdir -p "$BACKUP_DIR"
+  echo "Directory $BACKUP_DIR has been created."
 else
-  MAX_BACKUPS=0
+  echo "Directory $BACKUP_DIR is laready exists."
+fi
+  
+# Generate a backup version number (1.0.0)
+
+VERSIONS_JSON=$1
+echo "$VERSIONS_JSON"
+
+# Version increment
+NEW_VERSION=$(echo "$VERSIONS_JSON" | awk -F. -v OFS=. '{ $NF=sprintf("%d",$NF+1); print }')
+
+# Archive the repository (excluding 'backup' folder)
+ARCHIVE_NAME="devops_internship_${NEW_VERSION}"
+tar czvf "$ARCHIVE_NAME.tar.gz" --exclude="/backup" .
+
+# Move the archived repository to the 'backup' folder
+mv "$ARCHIVE_NAME.tar.gz" "$BACKUP_DIR/"
+
+# Update the version file with the new version number
+echo "$NEW_VERSION" > "$VERSIONS_JSON"
+
+# Create versions.json if it doesn't exist
+VERSIONS_JSON_NEW="${BACKUP_DIR}/versions.json"
+if [ ! -f "$VERSIONS_JSON_NEW" ]; then
+  echo '[]' > "$VERSIONS_JSON_NEW"
 fi
 
-# Check if the RUN_AMOUNT environment variable is set and is a valid number
-if [[ -n "$RUN_AMOUNT" && "$RUN_AMOUNT" =~ ^[0-9]+$ ]]; then
-  RUN_AMOUNT=$RUN_AMOUNT
-else
-  RUN_AMOUNT=1
-fi
+# Calculate the size of the archived file
+ARCHIVE_SIZE=$(du -h "${BACKUP_DIR}/${ARCHIVE_NAME}.tar.gz" | cut -f1)
 
-# Ensure the backup directory exists
-mkdir -p "$BACKUP_DIR"
+# Create JSON entry for the new backup
+BACKUP_INFO='{
+  "version": "'"$NEW_VERSION"'",
+  "date": "'$(date -u +"%Y-%m-%dT%H:%M:%SZ")'",
+  "size": "'"$ARCHIVE_SIZE"'",
+  "filename": "'"$ARCHIVE_NAME.tar.gz"'"
+}'
 
-# Loop to execute the script RUN_AMOUNT times
-for ((i=1; i<=$RUN_AMOUNT; i++)); do
-
-  # Get the current date in the desired format
-  CURRENT_DATE=$(date +'%d.%m.%Y')
-
-  # Determine the version number by counting existing backups
-  if [[ ! -f "$BACKUP_DIR/versions.json" ]]; then
-    VERSION="1.0.0"
-  else
-    LAST_VERSION=$(jq -r '.[-1].version' "$BACKUP_DIR/versions.json")
-    LAST_VERSION=${LAST_VERSION:-"0.0.0"}
-    
-    # Increment the version number
-    VERSION_ARRAY=(${LAST_VERSION//./ })
-    MAJOR=${VERSION_ARRAY[0]}
-    MINOR=${VERSION_ARRAY[1]}
-    PATCH=${VERSION_ARRAY[2]}
-    
-    PATCH=$((PATCH + 1))
-    VERSION="$MAJOR.$MINOR.$PATCH"
-  fi
-
-  # Clone the repository
-  REPO_DIR="$BACKUP_DIR/$REPO_NAME"
-  if [[ ! -d "$REPO_DIR" ]]; then
-    git clone "$REPO_SSH_URL" "$REPO_DIR"
-  else
-    # If the repository already exists, update it
-    cd "$REPO_DIR" || exit
-    git pull
-    cd -
-  fi
-
-  # Archive the repository and delete it
-  ARCHIVE_FILENAME="devops_internship_$VERSION"
-  ARCHIVE_PATH="$BACKUP_DIR/$ARCHIVE_FILENAME.tar.gz"
-  tar -czf "$ARCHIVE_PATH" -C "$REPO_DIR" .
-  rm -rf backup/$REPO_NAME
-
-  # Write backup information to versions.json
-  BACKUP_INFO='{
-    "version": "'$VERSION'",
-    "date": "'$CURRENT_DATE'",
-    "size": '$(stat -c %s "$ARCHIVE_PATH")',
-    "filename": "'$ARCHIVE_FILENAME'"
-  }'
-
-  if [[ ! -f "$BACKUP_DIR/versions.json" ]]; then
-    echo "[$BACKUP_INFO]" > "$BACKUP_DIR/versions.json"
-  else
-    jq ". += [$BACKUP_INFO]" "$BACKUP_DIR/versions.json" > "$BACKUP_DIR/versions.json.tmp" && mv "$BACKUP_DIR/versions.json.tmp" "$BACKUP_DIR/versions.json"
-  fi
-
-   # Removing old backups if MAX_BACKUPS is set
-   if [[ -n "$MAX_BACKUPS" && "$MAX_BACKUPS" =~ ^[0-9]+$ ]]; then
-    BACKUPS=$(ls -t1 "$BACKUP_DIR"/*.tar.gz 2>/dev/null)
-    NUM_BACKUPS=$(echo "$BACKUPS" | wc -l)
-    
-    if [ "$NUM_BACKUPS" -gt "$MAX_BACKUPS" ]; then
-      NUM_TO_DELETE=$((NUM_BACKUPS - MAX_BACKUPS))
-      
-      # Delete the oldest backups
-      echo "Deleting $NUM_TO_DELETE old backups..."
-      echo "$BACKUPS" | tail -n "$NUM_TO_DELETE" | xargs rm
-    fi
-  fi
-
-  echo "Backup completed: $ARCHIVE_FILENAME"
-
-done
+# Append the JSON entry to versions.json
+jq --argjson new_entry "$BACKUP_INFO" '. += [$new_entry]' "$VERSIONS_JSON_NEW" > "${VERSIONS_JSON_NEW}.new"
+mv "${VERSIONS_JSON_NEW}.new" "$VERSIONS_JSON_NEW"

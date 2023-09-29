@@ -1,4 +1,36 @@
-name: Nginx
+name: DO_3_Nginx. Build & Upload.
+run-name: ${{ github.sha }} Nginx for DO_3 
+on:
+  workflow_dispatch:
+    inputs:
+      runner:
+        description: 'Runs-on'
+        required: true
+        default: 'warning'
+        type: choice
+        options:
+        - ubuntu-latest
+        - self-hosted
+  push:
+    paths:
+      - 'nginx/**'
+  pull_request:
+    paths:
+      - 'nginx/**'
+  
+jobs:
+  nginx-build:
+    runs-on: ${{inputs.runner || 'ubuntu-latest'}} # either self-hosted or github runner
 
-on: 
-  workflow_dispatch
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Build Docker Image
+        run: cd nginx/ && docker build -t nginx_devops:latest .
+
+      - name: Upload Docker image
+        uses: ishworkh/container-image-artifact-upload@v1.0.0
+        with:
+          image: "nginx_devops:latest"
+          retention_days: 1

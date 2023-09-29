@@ -1,4 +1,56 @@
-name: Backend
+name: DO_3_Backend. Lint,Test,Build & Upload.
+run-name: ${{ github.sha }} Backend for DO_3 
+on:
+  workflow_dispatch:
+    inputs:
+      runner:
+        description: 'Runs-on'
+        required: true
+        default: 'warning'
+        type: choice
+        options:
+        - ubuntu-latest
+        - self-hosted
+  push:
+    paths:
+      - 'app/**'
+  pull_request:
+    paths:
+      - 'app/**'
 
-on: 
-  workflow_dispatch
+jobs:
+  backend_build_for_DO3:
+    runs-on: ${{inputs.runner || 'ubuntu-latest'}} # either self-hosted or github runner
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install Python
+        run: |
+          sudo apt-get update
+          sudo apt-get install python3
+          sudo apt-get install python3-pip
+          python3 -m pip install --upgrade pip
+        shell: bash
+
+      - name: Install Dependencies
+        run: | 
+          python3 -m pip install -r app/requirements.txt
+          python3 -m pip install -r app/requirements_dev.txt
+        shell: bash
+
+      - name: Lint with flake8
+        run: flake8 app/
+
+      - name: Run Tests
+        run: python3 -m pytest app/tests/
+
+      - name: Build Docker Image
+        run: cd app/ && docker build -t be_devops:latest .
+
+      - name: Upload Docker image
+        uses: ishworkh/container-image-artifact-upload@v1.0.0
+        with:
+          image: "be_devops:latest"
+          retention_days: 1
+
