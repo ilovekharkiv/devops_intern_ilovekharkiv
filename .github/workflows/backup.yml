@@ -1,0 +1,71 @@
+name: DO_3_Backup. Create & Upload
+run-name: ${{ github.sha }} Backup for DO_3 
+on: 
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      runner:
+        description: 'Runs-on'
+        required: true
+        default: 'warning'
+        type: choice
+        options:
+        - ubuntu-latest
+        - self-hosted
+
+jobs:
+  run-backup:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: read
+      actions: read
+      packages: write
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+      
+    - name: Install jq
+      run: sudo apt-get install jq
+
+    - name: Download versions.json artifact
+      uses: dawidd6/action-download-artifact@v2
+      with:
+        name: versions.json
+        path: backup/
+      continue-on-error: true
+
+    - name: Launch backup.sh using version.json from last artifact
+      run: |
+        if [ -f backup/versions.json ]; then
+         VERSION=$(jq -r '.[] | "\(.version)\t\(.date)"' backup/versions.json | sort -k2 -r | head -n1 | cut -f1)
+        fi
+        if [ -z "$VERSION" ]; then
+         VERSION="1.0.0"
+        fi
+        chmod +x ./backup.sh
+        echo "$VERSION"
+        ./backup.sh $VERSION
+
+    - name: Extract version from file name
+      id: get_version
+      run: |
+        cd backup
+        VERSIONS_JSON=$(echo devops_internship_*.tar.gz | grep -oP '(?<=devops_internship_)\d+\.\d+\.\d+')
+        echo "VERSIONS_JSON=$VERSIONS_JSON" >> $GITHUB_ENV
+
+    - name: Upload .tar.gz files as artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: backup_artifacts_devops_internship_${{ env.VERSIONS_JSON }}
+        path: backup/*.tar.gz
+        retention-days: 5
+        
+    - name: Upload versions.json as artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: versions.json
+        path: backup/versions.json
+        retention-days: 5

@@ -20,7 +20,7 @@ on:
   
 jobs:
   nginx-build:
-    runs-on: ${{inputs.runner || 'ubuntu-20.04'}} # either self-hosted or github runner
+    runs-on: ${{inputs.runner || 'ubuntu-latest'}} # either self-hosted or github runner
 
     steps:
       - name: Checkout Code
@@ -33,4 +33,4 @@ jobs:
         uses: ishworkh/container-image-artifact-upload@v1.0.0
         with:
           image: "nginx_devops:latest"
-          retention_days: 1
+          retention-days: 1
