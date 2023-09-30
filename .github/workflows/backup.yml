@@ -1,5 +1,5 @@
-name: DO_3_Backup. Create & Upload
-run-name: ${{ github.sha }} Backup for DO_3 
+name: DO_4_Backup. Create & Upload to S3
+run-name: ${{ github.sha }} Backup for DO_4
 on: 
   push:
   pull_request:
@@ -15,7 +15,7 @@ on:
         - self-hosted
 
 jobs:
-  run-backup:
+  backup-upload-S3:
     runs-on: ${{inputs.runner || 'ubuntu-latest'}} # either self-hosted or github runner
     
     permissions:
@@ -30,14 +30,28 @@ jobs:
     - name: Install jq
       run: sudo apt-get install jq
 
-    - name: Download versions.json artifact
-      uses: dawidd6/action-download-artifact@v2
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v2
       with:
-        name: versions.json
-        path: backup/
-      continue-on-error: true
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }} 
 
-    - name: Launch backup.sh using version.json from last artifact
+    - name: Check and download versions.json
+      run: |
+        S3_BUCKET="devops-intern-ilovekharkiv"
+        FILE_KEY="versions.json"
+                      
+        if aws s3api head-object --bucket "$S3_BUCKET" --key "$FILE_KEY" 2>/dev/null; then
+          echo "File exists in S3. Downloading..."
+          aws s3 cp "s3://$S3_BUCKET/$FILE_KEY" "./backup/$FILE_KEY"
+          echo "File downloaded successfully!"
+        else
+          echo "File does not exist in S3. Moving forward."
+        fi
+        ls -lh
+
+    - name: Launch backup.sh using version.json from S3 bucket
       run: |
         if [ -f backup/versions.json ]; then
          VERSION=$(jq -r '.[] | "\(.version)\t\(.date)"' backup/versions.json | sort -k2 -r | head -n1 | cut -f1)
@@ -47,25 +61,8 @@ jobs:
         fi
         chmod +x ./backup.sh
         echo "$VERSION"
-        ./backup.sh $VERSION
+        ./backup.sh $VERSION 
 
-    - name: Extract version from file name
-      id: get_version
-      run: |
-        cd backup
-        VERSIONS_JSON=$(echo devops_internship_*.tar.gz | grep -oP '(?<=devops_internship_)\d+\.\d+\.\d+')
-        echo "VERSIONS_JSON=$VERSIONS_JSON" >> $GITHUB_ENV
-
-    - name: Upload .tar.gz files as artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: backup_artifacts_devops_internship_${{ env.VERSIONS_JSON }}
-        path: backup/*.tar.gz
-        retention-days: 5
-        
-    - name: Upload versions.json as artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: versions.json
-        path: backup/versions.json
-        retention-days: 5
+    - name: Upload to S3!
+      id: upload_to_s3
+      run: aws s3 sync backup/ s3://devops-intern-ilovekharkiv  
