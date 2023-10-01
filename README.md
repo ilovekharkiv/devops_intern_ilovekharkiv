@@ -5,7 +5,7 @@
 #### [2. Instructions for task DO_2](https://github.com/ilovekharkiv/devops_intern_ilovekharkiv/tree/DO_2#instructions-for-task-do_2)
 #### [3. Instructions for task DO_3]()
 #### [3. Instructions for task DO_4](https://github.com/ilovekharkiv/devops_intern_ilovekharkiv/tree/DO_4#instructions-for-task-do_4)
-
+#### [3. Instructions for task DO_5](https://github.com/ilovekharkiv/devops_intern_ilovekharkiv/tree/DO_4#instructions-for-task-do_5)
 
 ## Instructions for task DO_1 
 <details>
@@ -259,3 +259,19 @@ You don't need to configure `Advanced details` at this point. We will need to co
 ![](/screenshots/do_4/iam11.png "iam")
 
 </details>
+
+## Instructions for task DO_5
+<details>
+<summary>Click to expand</summary>
+
+
+##### Here are the links to my ec2 instance
+
+Link  |  Endpoint
+------------- | -------------
+http://16.171.164.127/  | root
+http://16.171.164.127/api/health  | health
+
+
+</details>
+

@@ -1,0 +1,61 @@
+name: DO_5_Deploy Deploy to EC2
+run-name: ${{ github.sha }} App deploy for DO_5
+on:
+  workflow_dispatch:
+    inputs:
+      runner:
+        description: 'Runs-on'
+        required: true
+        default: 'warning'
+        type: choice
+        options:
+        - ubuntu-latest
+        - self-hosted
+
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+    
+      - name: Copy file via ssh key
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          port: ${{ secrets.SSH_PORT }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "docker-compose-prod.yml"
+          target: /home/ubuntu
+        
+      - name: Connect to cloud VM using SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            aws ecr get-login-password \
+            --region eu-north-1 \
+                | docker login \
+            --username AWS \
+            --password-stdin 534279642551.dkr.ecr.eu-north-1.amazonaws.com
+            cd /home/ubuntu && docker-compose -f docker-compose-prod.yml pull
+            docker-compose -f docker-compose-prod.yml pull \ 
+            docker-compose -f docker-compose-prod.yml up --build -d
