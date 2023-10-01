@@ -1,5 +1,5 @@
-name: DO_4_Frontend. Checkout,Test,Build & Upload to ECR.
-run-name: ${{ github.sha }} FE for DO_4 
+name: DO_5_Frontend. Checkout,Test,Build & Upload to ECR.
+run-name: ${{ github.sha }} FE for DO_5
 on:
   workflow_dispatch:
     inputs:
@@ -19,7 +19,7 @@ on:
       - 'frontend/**'
 
 jobs:
-  checkout-test-build-upload-DO4:
+  checkout-test-build-upload-DO5:
     runs-on: ${{inputs.runner || 'ubuntu-latest'}} # either self-hosted or github runner
 
     steps:
@@ -35,7 +35,7 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version: '18'
 
       - name: Install Dependencies
         run: npm install
@@ -70,5 +70,5 @@ jobs:
           REPOSITORY: frontend
           IMAGE_TAG: latest
         run: |
-          cd frontend/ && docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
+          cd frontend/ && docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG . --no-cache
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG

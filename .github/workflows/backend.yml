@@ -1,5 +1,5 @@
-name: DO_4_Backend. Lint,Test,Build & Upload to ECR.
-run-name: ${{ github.sha }} Backend for DO_4 
+name: DO_5_Backend. Lint,Test,Build & Upload to ECR.
+run-name: ${{ github.sha }} Backend for DO_5
 on:
   workflow_dispatch:
     inputs:
@@ -19,7 +19,7 @@ on:
       - 'app/**'
 
 jobs:
-  checkout-test-build-upload-DO4:
+  checkout-test-build-upload-DO5:
     runs-on: ${{inputs.runner || 'ubuntu-latest'}} # either self-hosted or github runner
     steps:
       - name: Checkout Code

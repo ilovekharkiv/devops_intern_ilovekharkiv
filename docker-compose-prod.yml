@@ -23,14 +23,13 @@ services:
 
     nginx:
         restart: always
-        image: 534279642551.dkr.ecr.eu-north-1.amazonaws.com/nginx:latest
+        image: 534279642551.dkr.ecr.eu-north-1.amazonaws.com/webserver:latest
         ports:
           - "${PORT_NGINX}:${PORT_NGINX}"
         depends_on:
           - frontend
           - backend
-        volumes:
-          - ./nginx/configs:/etc/nginx/conf.d
+          - database
         env_file:
         - .env
 

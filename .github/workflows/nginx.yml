@@ -1,5 +1,5 @@
-name: DO_4_Nginx. Build & Upload.
-run-name: ${{ github.sha }} Nginx for DO_4
+name: DO_5_Nginx. Build & Upload.
+run-name: ${{ github.sha }} Nginx for DO_5
 on:
   workflow_dispatch:
     inputs:
@@ -19,13 +19,13 @@ on:
       - 'nginx/**'
   
 jobs:
-  nginx-build-upload-DO4:
+  nginx-build-upload-DO5:
     runs-on: ${{inputs.runner || 'ubuntu-latest'}} # either self-hosted or github runner
 
     steps:
-      - name: Checkout Code
+      - name: Checkout code
         uses: actions/checkout@v4
-
+      
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
@@ -40,12 +40,12 @@ jobs:
           mask-password: 'true'
 
       - name: Build, tag, and push docker image to Amazon ECR
-        env:
-          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          REPOSITORY: nginx
-          IMAGE_TAG: latest
         run: |
-          cd nginx/ && docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
+          ls -lh nginx/configs
+          cd nginx/ && docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG . --no-cache
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
-
+        env:
+            REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+            REPOSITORY: webserver
+            IMAGE_TAG: latest 
 
