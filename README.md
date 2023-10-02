@@ -3,7 +3,7 @@
 ## Table of Contents
 #### [1. Instructions for task DO_1](https://github.com/ilovekharkiv/devops_intern_ilovekharkiv/tree/DO_2#instructions-for-task-do_1)
 #### [2. Instructions for task DO_2](https://github.com/ilovekharkiv/devops_intern_ilovekharkiv/tree/DO_2#instructions-for-task-do_2)
-#### [3. Instructions for task DO_3]()
+#### [3. Instructions for task DO_3. Not needed for now.]()
 #### [3. Instructions for task DO_4](https://github.com/ilovekharkiv/devops_intern_ilovekharkiv/tree/DO_4#instructions-for-task-do_4)
 #### [3. Instructions for task DO_5](https://github.com/ilovekharkiv/devops_intern_ilovekharkiv/tree/DO_4#instructions-for-task-do_5)
 
