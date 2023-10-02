@@ -1,0 +1,4 @@
+name: DO_5_Deploy. Deploy to EC2
+
+on:
+  workflow_dispatch:
