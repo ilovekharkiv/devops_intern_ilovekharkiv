@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/bin/bash
 
 workers_cnt=$(( $(nproc) * 2 + 1 ))
 
