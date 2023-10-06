@@ -20,7 +20,7 @@ on:
 
 jobs:
   checkout-test-build-upload-DO5:
-    runs-on: ${{inputs.runner || 'ubuntu-latest'}} # either self-hosted or github runner
+    runs-on: ${{ inputs.runner }} # either self-hosted or github runner
 
     steps:
       - name: Checkout Code
