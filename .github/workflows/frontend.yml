@@ -1,5 +1,5 @@
-name: DO_3_Frontend. Checkout,Test,Build & Upload.
-run-name: ${{ github.sha }} FE for DO_3 
+name: DO_5_Frontend. Checkout,Test,Build & Upload to ECR.
+run-name: ${{ github.sha }} FE for DO_5
 on:
   workflow_dispatch:
     inputs:
@@ -19,8 +19,8 @@ on:
       - 'frontend/**'
 
 jobs:
-  setup-and-test:
-    runs-on: ${{inputs.runner || 'ubuntu-latest'}} # either self-hosted or github runner
+  checkout-test-build-upload-DO5:
+    runs-on: ${{ inputs.runner }} # either self-hosted or github runner
 
     steps:
       - name: Checkout Code
@@ -35,7 +35,7 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version: '18'
 
       - name: Install Dependencies
         run: npm install
@@ -51,11 +51,24 @@ jobs:
           npm run test:ci
         working-directory: frontend/
 
-      - name: Build Docker Image
-        run: cd frontend/ && docker build -t fe_devops:latest .
-
-      - name: Upload Docker image
-        uses: ishworkh/container-image-artifact-upload@v1.0.0
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
         with:
-          image: "fe_devops:latest"
-          retention_days: 1
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }} 
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+        with:
+          mask-password: 'true'
+
+      - name: Build, tag, and push docker image to Amazon ECR
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: frontend
+          IMAGE_TAG: latest
+        run: |
+          cd frontend/ && docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG . --no-cache
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
