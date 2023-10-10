@@ -56,7 +56,6 @@ jobs:
                 | docker login \
             --username AWS \
             --password-stdin 534279642551.dkr.ecr.eu-north-1.amazonaws.com
-            cd /home/ubuntu && docker-compose -f docker-compose-prod.yml down && sleep 15
-            docker rmi -f $(docker images -aq)
-            docker-compose -f docker-compose-prod.yml pull \ 
-            docker-compose -f docker-compose-prod.yml up --build -d
+            cd /home/ubuntu && docker compose -f docker-compose-prod.yml down && sleep 15
+            docker compose -f docker-compose-prod.yml pull \ 
+            docker compose -f docker-compose-prod.yml up --build -d
