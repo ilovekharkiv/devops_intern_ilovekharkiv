@@ -62,10 +62,11 @@ jobs:
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REPOSITORY: backend
-          IMAGE_TAG: latest
+          IMAGE_TAG_1: latest
+          IMAGE_TAG_2: ${{ github.sha }}
         run: |
-          cd app/ && docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
-          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          cd app/ && docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG_1 $REGISTRY/$REPOSITORY:$IMAGE_TAG_2.
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG_1
           
 
 
