@@ -65,7 +65,7 @@ jobs:
           IMAGE_TAG_1: latest
           IMAGE_TAG_2: ${{ github.sha }}
         run: |
-          cd app/ && docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG_1 $REGISTRY/$REPOSITORY:$IMAGE_TAG_2.
+          cd app/ && docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG_1 $REGISTRY/$REPOSITORY:$IMAGE_TAG_2 .
           docker push --all-tags $REGISTRY/$REPOSITORY
           
 
