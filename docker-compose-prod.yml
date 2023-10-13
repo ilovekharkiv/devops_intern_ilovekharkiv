@@ -3,8 +3,7 @@ services:
 
     frontend:
       restart: always
-      build:
-        context: ./frontend
+      image: 534279642551.dkr.ecr.eu-north-1.amazonaws.com/frontend:latest
       ports:
         - "${PORT_FRONTEND}:${PORT_FRONTEND}"
       env_file:
@@ -12,8 +11,7 @@ services:
 
     backend:
       restart: always
-      build:
-        context: ./app
+      image: 534279642551.dkr.ecr.eu-north-1.amazonaws.com/backend:latest
       ports:
         - "${PORT_BACKEND}:${PORT_BACKEND}"
       environment:
@@ -25,15 +23,13 @@ services:
 
     nginx:
         restart: always
-        build:
-          context: ./nginx
+        image: 534279642551.dkr.ecr.eu-north-1.amazonaws.com/webserver:latest
         ports:
           - "${PORT_NGINX}:${PORT_NGINX}"
         depends_on:
           - frontend
           - backend
-        volumes:
-          - ./nginx/configs:/etc/nginx/conf.d
+          - database
         env_file:
         - .env
 

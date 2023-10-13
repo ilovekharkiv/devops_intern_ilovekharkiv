@@ -1,5 +1,5 @@
-name: DO_4_Nginx. Build & Upload.
-run-name: ${{ github.sha }} Nginx for DO_4
+name: DO_5_Nginx. Build & Upload.
+run-name: ${{ github.sha }} Nginx for DO_5
 on:
   workflow_dispatch:
     inputs:
@@ -23,9 +23,9 @@ jobs:
     runs-on: ${{ inputs.runner }}
 
     steps:
-      - name: Checkout Code
+      - name: Checkout code
         uses: actions/checkout@v4
-
+      
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:

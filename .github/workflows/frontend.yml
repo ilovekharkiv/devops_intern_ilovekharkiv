@@ -1,5 +1,5 @@
-name: DO_4_Frontend. Checkout,Test,Build & Upload to ECR.
-run-name: ${{ github.sha }} FE for DO_4 
+name: DO_5_Frontend. Checkout,Test,Build & Upload to ECR.
+run-name: ${{ github.sha }} FE for DO_5
 on:
   workflow_dispatch:
     inputs:
@@ -34,7 +34,7 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version: '18'
 
       - name: Install Dependencies
         run: npm install

@@ -10,5 +10,5 @@ def health_check() -> dict:
     return {
         "status": status.HTTP_200_OK,
         "date": datetime.now(),
-        "message": "I'm alive",
+        "message": "I'm alive. Removed down command DO_5",
     }
